@@ -1,28 +1,466 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+        <header id="hd">
+            <h1>{{Sitename}}</h1>          
+        </header>
+            <div id="fr">           
+            <div id="kh">
+                <button id="ck" v-if="checked()" @click="showCheckout"> 
+                {{ cartItemCount}} in<span class="fas fa-cart-plus"></span> 
+                Cart</button> 
+                <button disabled="disabled" 
+                v-else id="hk"><span class="fas fa-cart-plus"></span>
+                Cart</button>
+                </div>
+           </div>
+
+ <div v-if='showLesson'>
+       <lesson-list :lessons="lessons" :images="images"  @addLesson = 'addLesson'></lesson-list>
+      </div>
+
+      <div v-else>
+          <checkers-list :cart="cart" :lessons="lessons"  @clearCart="clearCart" @removeItem="removeItem" ></checkers-list>
+      </div>
+      </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import LessonList from "./components/LessonList.vue";
+import CheckersList from "./components/CheckersList.vue";
+
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
+  components: { LessonList, CheckersList },
+
+  data () {
+    return {
+      Sitename: 'After School Lessons',
+      cart: [],
+      lessons: [],
+      images: [],
+      showLesson: true, 
+    }
+  },
+
+methods: {
+        addLesson(lessons){
+          if(lessons.space > 0){
+          lessons.space -= 1
+          this.cart.push(lessons._id) //pushes id to the cart
+
+        for(let i = 0; i < this.lessons.length; i++){
+          if(lessons._id === this.lessons[i]._id){
+            this.lessons[i].space = lessons.space;
+          }
+        }
+      }
+        },
+
+        showCheckout() {
+            this.showLesson = this.showLesson ? false : true;
+        },
+ 
+        checked(){
+            if(this.cartItemCount > 0 ){
+            return true;
+            }else{
+
+                  return false;
+                  }
+        },   
+ 
+ removeItem(id){
+      for(let i = 0; i < this.cart.length; i++){
+        if(id === this.cart[i]){ //searches for the id that is in the cart to get the array index
+          this.cart.splice(i, 1); //removes the item from the cart using array index
+          break; //stops for loop
+        }
+      }
+      for(let i = 0; i < this.lessons.length; i++){
+        if(id === this.lessons[i]._id){
+          this.lessons[i].space += 1
+        }
+      }
+    },
+
+clearCart(){
+      this.cart = [];
+    }
+},
+
+computed: {
+                cartItemCount() {
+                return this.cart.length || '';
+         },
+     },
+
+created:
+function(){
+fetch("https://webstorehero.herokuapp.com/collection/Lessons").
+then(response => response.json())
+.then(data => (this.lessons = data))
+
+fetch("https://webstorehero.herokuapp.com/Images").
+then(response => response.json())
+.then(data => (this.images = data))
+},
+
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+html {
+    width: 100%;
+    height: 100%;
+    scroll-behavior: smooth;
+  }
+
+  
+body{
+    margin: 0;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+body::-webkit-scrollbar {
+    width: 5px;
+  }
+   
+  body::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  }
+   
+  body::-webkit-scrollbar-thumb {
+    background-color: black;
+    outline: 1px solid slategrey;
+  }
+  
+#hd{
+    margin-left: 4%;
+    margin-top: -10%;
+}
+
+#hus{
+    margin-left: 10%;
+    
+}
+
+#lessonlst{
+ display: inline;
+}
+
+.lessonlist {
+    display: inline-block;
+    margin-left: 80px;
+    margin-top: 20px;
+}
+
+
+.lessonlist1 {
+    display: inline-block;
+    margin-left: 146px;
+    padding-top: 80px;
+    margin-top: 20px;
+}
+
+#real{
+    display: flex;
+}
+
+#real1{
+    flex-grow: 1;
+    margin: right;
+}
+
+#real2{
+    flex-grow: 1;
+    position: fixed;
+}
+#app{
+    margin-left: -2%;
+    padding-top: 10%;
+    width: 100%;
+    height: 50%;
+}
+
+#fr{
+    display: flex;
+    width: 100%;
+    margin-top: -3%;
+    margin-left: -25%;
+}
+
+#oo{
+    flex-grow: 1;
+}
+
+#kh{
+    flex-grow: 1;
+    
+}
+
+.tx{
+    margin-left: 20px;
+    height: 32px;
+    text-indent: 10px;
+    font-size: 14px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+#ck{
+    margin-left: 110%;
+    width: 120px;
+    height: 38px;
+    padding-top: 2px;
+    text-align: center;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    border: none;
+    transition: all .2s ease-in-out;
+}
+#ck:link, #ck:visited {
+    background-color: black;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+#ck:hover, #ck:active {
+    background-color: white;
+    color:black;
+    border-radius: 20px;
+    border-style: ridge;
+    transform: scale(1.1); 
+}
+
+#hk{
+    margin-left: 110%;
+    width: 120px;
+    height: 38px;
+    padding-top: 2px;
+    text-align: center;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    background-color: gray;
+    color: white;
+    border: none;
+    transition: all .2s ease-in-out;
+}
+
+
+#hik{
+    width: 120px;
+    height: 38px;
+    margin-top: -60px;
+    padding-top: 2px;
+    text-align: center;
+    background-color: gray;
+    color: white;
+    border: none;
+    transition: all .2s ease-in-out;
+}
+
+#ik{
+    width: 120px;
+    height: 38px;
+    padding-top: 2px;
+    text-align: center;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    border: none;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    transition: all .2s ease-in-out;
+}
+
+#ik:link, #ik:visited {
+    background-color: black;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+#ik:hover, #ik:active {
+    background-color: white;
+    color:black;
+    border-radius: 20px;
+    border-style: ridge;
+    transform: scale(1.1); 
+}
+
+#myDIV {
+  width: 45%;
+  height: 30px;
+  padding: 50px 0;
+  background-color: whitesmoke;
+  margin-top: 20px;
+  display: none;
+}
+
+#gt{
+    margin-top: -11%;
+    margin-left: 20px;
+    
+}
+
+.ss{
+    margin-top: 10px;
+    margin-left: 40px;
+    width: 70px;
+    height: 30px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: center;
+}
+.ll{
+    margin-left: 5px;
+    width: 70px;
+    height: 30px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: center;
+}
+
+.pp{
+    margin-top: 10px;
+    margin-left: 80px;
+    width: 70px;
+    height: 30px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: center;
+}
+
+.sp{
+    margin-left: 5px;
+    width: 70px;
+    height: 30px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: center;
+    
+}
+
+#im{
+    margin-left: -25px;
+}
+
+#sub{
+    margin-left: -20px;
+}
+
+#adc{
+    width: 100px;
+    height: 38px;
+    margin-top: -60px;
+    padding-top: 2px;
+    text-align: center;
+    background-color: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+}
+#adc:link, #adc:visited {
+    background-color: black;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+#adc:hover, #adc:active {
+    background-color: white;
+    color:black;
+    border-style: ridge;
+    transform: scale(0.9); 
+}
+
+.open-button {
+    background-color: #555;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    opacity: 0.8;
+    position: fixed;
+    bottom: 50%;
+    right: 75%;
+    width: 280px;
+  }
+  
+  /* The popup form - hidden by default */
+  .form-popup {
+    display: none;
+    background-color: white;
+    position: fixed;
+    height: 400px;
+    bottom: 20%;
+    right: 72%;
+    border: 3px solid #f1f1f1;
+    z-index: 9;
+  }
+  
+  /* Add styles to the form container */
+  .form-container {
+    width: 300px;
+    padding: 10px;
+    background-color: white;
+  }
+  
+  /* Full-width input fields */
+  .form-container input[type=text], .form-container input[type=tel] {
+    width: 90%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    border: none;
+    background: #f1f1f1;
+  }
+  
+  /* When the inputs get focus, do something */
+  .form-container input[type=text]:focus {
+    background-color: #ddd;
+    outline: none;
+  }
+  
+  /* Set a style for the submit/login button */
+   .btn {
+    background-color: black;
+    color: white;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    margin-left: 8%;
+    width: 85%;
+    margin-bottom:10px;
+    opacity: 0.8;
+  }
+  
+  /* Add a red background color to the cancel button */
+  .form-container .cancel {
+    background-color: gray;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  }
+  
+  /* Add some hover effects to buttons */
+  .form-container .btn:hover, .open-button:hover {
+    opacity: 1;
+}
+
+#der{
+    margin-left: 8%;
+    margin-bottom: 2%;
+    height: 50px;
+    padding: 5px 20px;
+    width: 85%;
+    padding-top: 2px;
+    text-align: center;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    background-color: gray;
+    color: white;
+    border: none;
+}
+
+.chr{
+    margin-left: 5%;
 }
 </style>
