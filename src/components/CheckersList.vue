@@ -1,6 +1,13 @@
 <template>
     <div id="hus">
-
+    <div id = "controls-checkout">
+        <p>Please enter your details</p>
+        <label for="fname">Name</label><br>
+        <input v-model="firstName"><br>
+        <label for="avail">Phone Number</label><br>
+        <input v-model="phoneNo"><br>
+        <button @click='placeOrder()'>Place Order</button>
+    </div>
 
   <div id="lessonlst">
         <div v-bind:key="lesson.key" v-for="lesson in getLessons()"> 
