@@ -18,9 +18,7 @@
        <lesson-list :lessons="lessons" :images="images"  @addLesson = 'addLesson'></lesson-list>
       </div>
 
-      <div v-else>
-          <checkers-list :cart="cart" :lessons="lessons"  @clearCart="clearCart" @removeItem="removeItem" ></checkers-list>
-      </div>
+      
       </div>
 </template>
 
