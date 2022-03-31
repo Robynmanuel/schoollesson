@@ -31,7 +31,7 @@ import CheckersList from "./components/CheckersList.vue";
 
 export default {
   name: 'App',
-  components: { LessonList, CheckersList },
+  components: { LessonList },
 
   data () {
     return {
