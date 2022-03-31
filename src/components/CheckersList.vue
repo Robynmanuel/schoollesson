@@ -8,7 +8,7 @@
             <h1>{{lesson.topic}}</h1>
             <p>location: {{lesson.location}}</p>
             <p>Price: {{lesson.price}}</p>
-            <button @click='removeLesson(lesson._id)'>Remove Lesson</button>
+            <button @click='removeLesson(lessons._id)'>Remove Lesson</button>
         </div>
       </div>
  </div> 
